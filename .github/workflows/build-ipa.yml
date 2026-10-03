@@ -34,7 +34,7 @@ jobs:
 
       - name: 4. Build App and Dependencies
         run: |
-          make build
+          make build GUEST=prebuilt
 
       - name: 5. Build with Xcode
         run: |
