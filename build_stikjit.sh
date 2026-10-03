@@ -16,6 +16,16 @@ set -euo pipefail
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+XCODEBUILD_SIGNING_FLAGS=()
+if [ "${SKIP_CODESIGNING:-0}" = "1" ]; then
+    XCODEBUILD_SIGNING_FLAGS=(
+        'CODE_SIGN_IDENTITY='
+        CODE_SIGNING_REQUIRED=NO
+        CODE_SIGNING_ALLOWED=NO
+        'PROVISIONING_PROFILE_SPECIFIER='
+    )
+fi
+
 SOURCE_DIR="${STIKJIT_SOURCE:-$BASEDIR/third-party/StikJIT}"
 BUILD_DIR="$BASEDIR/build-StikJIT"
 
@@ -179,6 +189,7 @@ xcodebuild archive \
     -scheme StikJIT \
     -destination 'generic/platform=iOS' \
     -archivePath "$ARCHIVE_PATH" \
+    "${XCODEBUILD_SIGNING_FLAGS[@]}" \
     BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
     SKIP_INSTALL=NO \
     GENERATE_INFOPLIST_FILE=YES \

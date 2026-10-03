@@ -34,7 +34,7 @@ jobs:
 
       - name: 4. Build App and Dependencies
         run: |
-          make build GUEST=prebuilt
+          make build GUEST=prebuilt SKIP_CODESIGNING=1
 
       - name: 5. Build with Xcode
         run: |

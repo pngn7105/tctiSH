@@ -37,6 +37,13 @@ GUEST_KERNEL      := assets/bzImage
 # them only if they are missing, which is what CI wants as a fresh clone always looks stale.
 GUEST             ?= build
 
+# Set SKIP_CODESIGNING=1 to pass the workflow's no-signing settings to Xcode builds.
+SKIP_CODESIGNING   ?= 0
+ifeq ($(SKIP_CODESIGNING),1)
+	XCODEBUILD_SIGNING_FLAGS := CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+								CODE_SIGNING_ALLOWED=NO PROVISIONING_PROFILE_SPECIFIER=""
+endif
+
 # Our QEMU, built for this Mac, which is what `boot-guest` runs. One build per backend:
 # build-macOS-arm64/qemu_{jit,tcti}. BACKEND picks which one a target means. The GC root keeps the
 # nix libraries those builds link against; see build_host_qemu.sh.
@@ -122,7 +129,7 @@ $(IDEVICE_LIBRARY): build_idevice.sh
 	$(SHELL_WRAPPER) ./build_idevice.sh
 
 $(STIKJIT_FRAMEWORK): build_stikjit.sh $(wildcard patches/*.patch) $(IDEVICE_LIBRARY)
-	$(SHELL_WRAPPER) ./build_stikjit.sh
+	SKIP_CODESIGNING=$(SKIP_CODESIGNING) $(SHELL_WRAPPER) ./build_stikjit.sh
 
 # Pinned by version and hash inside build_libssh2.sh, so again the script is the only prerequisite.
 # No $(SHELL_WRAPPER): it needs Xcode's iOS SDK and nothing the devshell adds.
@@ -232,7 +239,8 @@ endif
 
 .PHONY: build
 build: $(QEMU_LIBRARY) $(STIKJIT_FRAMEWORK) $(LIBSSH2_LIBRARY) $(PODS_MANIFEST) $(GUEST_IMAGES) ## Build the app for a generic iOS device (GUEST=prebuilt to skip rebuilding the guest images)
-	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH -destination 'generic/platform=iOS' build
+	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH -destination 'generic/platform=iOS' \
+		$(XCODEBUILD_SIGNING_FLAGS) build
 
 .PHONY: tctictl
 tctictl: $(TCTICTL_BINARY) ## Build the guest-side tctictl, which `make guest` consumes
@@ -401,7 +409,7 @@ lint: format-check clippy ## Run all the linting tasks
 
 .PHONY: clean-app
 clean-app: ## Remove the app's build output
-	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH clean
+	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH $(XCODEBUILD_SIGNING_FLAGS) clean
 
 .PHONY: clean-rust
 clean-rust: ## Remove tctictl's build output
