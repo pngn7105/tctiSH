@@ -35,11 +35,15 @@ jobs:
       - name: 4. Build App and Dependencies
         run: |
           make build GUEST=prebuilt SKIP_CODESIGNING=1
-            xcodebuild \
+
+      - name: 5. Build with Xcodebuild
+        run: |
+          xcodebuild \
             -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
             -scheme "tctiSH" \
             -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
             -destination "generic/platform=iOS" \
+            -skipPackagePluginValidation \
             ONLY_ACTIVE_ARCH=NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
