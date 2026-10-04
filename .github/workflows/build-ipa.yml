@@ -58,6 +58,8 @@ jobs:
           APP_PATH: ${{ runner.temp }}/BuildDerivedData/Build/Products/Release-iphoneos/tctiSH.app
           IPA_PATH: ${{ runner.temp }}/tctiSH.ipa
         run: |
+          brew install tree
+          tree
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP_PATH" "$RUNNER_TEMP/Payload/"
           zip -r tctiSH.zip $RUNNER_TEMP/Payload
