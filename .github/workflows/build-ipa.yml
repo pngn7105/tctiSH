@@ -57,12 +57,10 @@ jobs:
         env:
           APP_PATH: ${{ runner.temp }}/BuildDerivedData/Build/Products/Release-iphoneos/tctiSH.app
           IPA_PATH: ${{ runner.temp }}/tctiSH.ipa
-        run: |
-          test -d "$APP_PATH"
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP_PATH" "$RUNNER_TEMP/Payload/"
-          ditto -c -k --sequesterRsrc --keepParent \
-            "$RUNNER_TEMP/Payload" "$IPA_PATH"
+          zip -r tctiSH.zip $RUNNER_TEMP/Payload
+          mv $RUNNER_TEMP/tctiSH.zip $RUNNER_TEMP/tctiSH.ipa
 
       - name: 7. Store IPA as Workflow Artifact
         if: env.UPLOAD_IPA == 'true'
