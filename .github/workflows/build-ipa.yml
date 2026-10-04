@@ -39,13 +39,18 @@ jobs:
       - name: 5. Build with Xcode
         run: |
           xcodebuild \
+          -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
+          -scheme "tctiSH" \
+          -configuration Release \
+          -derivedDataPath $RUNNER_TEMP/BuildDerivedData \
+          -resolvePackageDependencies
+          xcodebuild \
             -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
             -scheme "tctiSH" \
             -configuration Release \
             -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
             -destination "generic/platform=iOS" \
             -skipPackagePluginValidation \
-            -resolvePackageDependencies \
             ONLY_ACTIVE_ARCH=NO \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
