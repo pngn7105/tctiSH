@@ -41,6 +41,7 @@ jobs:
           xcodebuild \
             -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
             -scheme "tctiSH" \
+            -configuration Release \
             -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
             -destination "generic/platform=iOS" \
             -skipPackagePluginValidation \
@@ -52,7 +53,7 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             build
 
-      - name: 5. Package .app into .ipa
+      - name: 6. Package .app into .ipa
         env:
           APP_PATH: ${{ runner.temp }}/BuildDerivedData/Build/Products/Release-iphoneos/tctiSH.app
           IPA_PATH: ${{ runner.temp }}/tctiSH.ipa
@@ -63,7 +64,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent \
             "$RUNNER_TEMP/Payload" "$IPA_PATH"
 
-      - name: 6. Store IPA as Workflow Artifact
+      - name: 7. Store IPA as Workflow Artifact
         if: env.UPLOAD_IPA == 'true'
         uses: actions/upload-artifact@v7
         with:
