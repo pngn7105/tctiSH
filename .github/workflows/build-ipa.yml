@@ -1,4 +1,5 @@
 # created by pngn7105 02.10.2026
+# tree in step 6 is installed for debugging
 name: Build tctiSH IPA
 
 on:
@@ -39,11 +40,12 @@ jobs:
       - name: 5. Build with Xcode
         run: |
           xcodebuild \
-          -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
-          -scheme "tctiSH" \
-          -configuration Release \
-          -derivedDataPath $RUNNER_TEMP/BuildDerivedData \
-          -resolvePackageDependencies
+            -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
+            -scheme "tctiSH" \
+            -configuration Release \
+            -derivedDataPath $RUNNER_TEMP/BuildDerivedData \
+            -resolvePackageDependencies \
+            ONLY_ACTIVE_ARCH=NO 
           xcodebuild \
             -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
             -scheme "tctiSH" \
