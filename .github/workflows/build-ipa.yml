@@ -43,7 +43,8 @@ jobs:
             -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
             -scheme "tctiSH" \
             -configuration Release \
-            -derivedDataPath $RUNNER_TEMP/BuildDerivedData \
+            -destination "generic/platform=iOS" \
+            -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
             -resolvePackageDependencies \
             ONLY_ACTIVE_ARCH=NO 
           xcodebuild \
