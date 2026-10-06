@@ -37,22 +37,8 @@ jobs:
         run: |
           make build GUEST=prebuilt SKIP_CODESIGNING=1
 
-      - name: 5. Build with Xcode
-        run: |
-          xcodebuild \
-            -workspace $GITHUB_WORKSPACE/tctiSH.xcworkspace \
-            -scheme "tctiSH" \
-            -configuration Release \
-            -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
-            -destination "generic/platform=iOS" \
-            ONLY_ACTIVE_ARCH=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            build
 
-      - name: 6. Package .app into .ipa
+      - name: 5. Package .app into .ipa
         env:
           APP_PATH: ${{ runner.temp }}/BuildDerivedData/Build/Products/Release-iphoneos/tctiSH.app
           IPA_PATH: ${{ runner.temp }}/tctiSH.ipa
@@ -64,7 +50,7 @@ jobs:
           cd "$RUNNER_TEMP"
           zip -qry tctiSH.ipa Payload
 
-      - name: 7. Store IPA as Workflow Artifact
+      - name: 6. Store IPA as Workflow Artifact
         if: env.UPLOAD_IPA == 'true'
         uses: actions/upload-artifact@v7
         with:
