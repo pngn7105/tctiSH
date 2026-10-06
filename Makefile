@@ -41,7 +41,7 @@ GUEST             ?= build
 SKIP_CODESIGNING   ?= 0
 ifeq ($(SKIP_CODESIGNING),1)
 	XCODEBUILD_SIGNING_FLAGS := CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
-								CODE_SIGNING_ALLOWED=NO PROVISIONING_PROFILE_SPECIFIER=""
+								CODE_SIGNING_ALLOWED=NO PROVISIONING_PROFILE_SPECIFIER="" 
 endif
 
 # Our QEMU, built for this Mac, which is what `boot-guest` runs. One build per backend:
@@ -239,7 +239,7 @@ endif
 
 .PHONY: build
 build: $(QEMU_LIBRARY) $(STIKJIT_FRAMEWORK) $(LIBSSH2_LIBRARY) $(PODS_MANIFEST) $(GUEST_IMAGES) ## Build the app for a generic iOS device (GUEST=prebuilt to skip rebuilding the guest images)
-	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH -destination 'generic/platform=iOS' \
+	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH -destination 'generic/platform=iOS' -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
 		$(XCODEBUILD_SIGNING_FLAGS) build
 
 .PHONY: tctictl
