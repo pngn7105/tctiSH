@@ -37,6 +37,7 @@ GUEST_KERNEL      := assets/bzImage
 # them only if they are missing, which is what CI wants as a fresh clone always looks stale.
 GUEST             ?= build
 
+NO_CLEAN_DATA    ?= 0
 # Set SKIP_CODESIGNING=1 to pass the workflow's no-signing settings to Xcode builds.
 SKIP_CODESIGNING   ?= 0
 ifeq ($(SKIP_CODESIGNING),1)
@@ -408,9 +409,10 @@ lint: format-check clippy ## Run all the linting tasks
 # deleted tracked files rather than as a clean slate. `make pods` regenerates it in place.
 
 .PHONY: clean-app
-clean-app: ## Remove the app's build output
+clean-app: ## Remove the app's build output if NO_CLEAN_DATA is 0
+ifeq ($(NO_CLEAN_DATA),0)
 	xcodebuild -workspace tctiSH.xcworkspace -scheme tctiSH $(XCODEBUILD_SIGNING_FLAGS) clean
-
+endif
 .PHONY: clean-rust
 clean-rust: ## Remove tctictl's build output
 	$(SHELL_WRAPPER) cargo clean --manifest-path utils/tctictl/Cargo.toml
