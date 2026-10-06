@@ -40,15 +40,7 @@ jobs:
       - name: 5. Build with Xcode
         run: |
           xcodebuild \
-            -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
-            -scheme "tctiSH" \
-            -configuration Release \
-            -destination "generic/platform=iOS" \
-            -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
-            -resolvePackageDependencies \
-            ONLY_ACTIVE_ARCH=NO 
-          xcodebuild \
-            -project $GITHUB_WORKSPACE/tctiSH.xcodeproj \
+            -workspace $GITHUB_WORKSPACE/tctiSH.xcworkspace \
             -scheme "tctiSH" \
             -configuration Release \
             -derivedDataPath "$RUNNER_TEMP/BuildDerivedData" \
@@ -69,8 +61,8 @@ jobs:
           tree
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP_PATH" "$RUNNER_TEMP/Payload/"
-          zip -r tctiSH.zip $RUNNER_TEMP/Payload
-          mv $RUNNER_TEMP/tctiSH.zip $RUNNER_TEMP/tctiSH.ipa
+          cd "$RUNNER_TEMP"
+          zip -qry tctiSH.ipa Payload
 
       - name: 7. Store IPA as Workflow Artifact
         if: env.UPLOAD_IPA == 'true'
