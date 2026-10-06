@@ -35,7 +35,7 @@ jobs:
 
       - name: 4. Build App and Dependencies
         run: |
-          make build GUEST=prebuilt SKIP_CODESIGNING=1
+          make build GUEST=prebuilt SKIP_CODESIGNING=1 NO_CLEAN_DATA=1
 
 
       - name: 5. Package .app into .ipa
